@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: nexo-infinity
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    healthCheckPath: /healthz
+    startCommand: gunicorn --worker-class gthread --workers 1 --threads 100 --timeout 120 --bind 0.0.0.0:$PORT app:sio
+    disk:
+      name: nexo-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: NEXO_ADMIN
+        sync: false
+      - key: NEXO_DATA_DIR
+        value: /var/data
+      - key: NEXO_SECURE_COOKIES
+        value: "true"
